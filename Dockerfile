@@ -1,4 +1,4 @@
-FROM --platform=${BUILDPLATFORM:-linux/amd64} node:20.14.0-alpine as builder
+FROM --platform=${BUILDPLATFORM:-linux/amd64} node:20.15.1-alpine as builder
 
 ENV NODE_ENV=production \
     VERDACCIO_BUILD_REGISTRY=https://registry.npmjs.org  \
@@ -30,7 +30,7 @@ RUN yarn pack --out verdaccio.tgz \
 ## clean up and reduce bundle size
 RUN rm -Rf /opt/verdaccio-build
 
-FROM node:20.14.0-alpine
+FROM node:20.15.1-alpine
 LABEL maintainer="https://github.com/verdaccio/verdaccio"
 
 ENV VERDACCIO_APPDIR=/opt/verdaccio \
@@ -60,7 +60,7 @@ RUN npm install -g $VERDACCIO_APPDIR/verdaccio.tgz \
     && rm $VERDACCIO_APPDIR/verdaccio.tgz \
     # yarn is not need it after this step
     # Also remove the symlinks added in the [`node:alpine` Docker image](https://github.com/nodejs/docker-node/blob/02a64a08a98a472c6141cd583d2e9fc47bcd9bfd/18/alpine3.16/Dockerfile#L91-L92).
-    && rm -Rf /opt/yarn-v1.22.19/ /usr/local/bin/yarn /usr/local/bin/yarnpkg
+    && rm -Rf /opt/yarn-v1.22.22/ /usr/local/bin/yarn /usr/local/bin/yarnpkg
 
 ADD conf/docker.yaml /verdaccio/conf/config.yaml
 ADD docker-bin $VERDACCIO_APPDIR/docker-bin
